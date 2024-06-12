@@ -47,3 +47,9 @@ jobs:
         bash ./hack/target_sync_image.sh "$ORIGIN_IMAGE" "$DOCKER_REGISTRY/$DOCKER_NAMESPACE"
         gh issue comment ${{ github.event.issue.number }} -b "镜像 ${ORIGIN_IMAGE} 同步完成<br>请使用 $DOCKER_REGISTRY/$DOCKER_NAMESPACE/$IMAGE_NAME 下载"
         gh issue close ${{ github.event.issue.number }} --reason "completed"
+    - name: Fail Sync
+      if: failure()
+      run: |
+        ORIGIN_IMAGE=$(echo ${{ github.event.issue.title }} | awk '{print $1}')
+        gh issue comment ${{ github.event.issue.number }} -b "镜像 ${ORIGIN_IMAGE} 同步失败[详情请查看](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})<br>请检查 image 是否存在"
+        gh issue close ${{ github.event.issue.number }} --reason "completed"
