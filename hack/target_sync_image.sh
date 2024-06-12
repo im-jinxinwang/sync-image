@@ -18,7 +18,7 @@ check_mirror() {
 
 main(){
     check_mirror
-    echo "$docker_password" | skopeo login "$DOCKER_REGISTRY" -u "$DOCKER_USER" --password-stdin
+    echo "$DOCKER_PASSWORD" | skopeo login "$DOCKER_REGISTRY" -u "$DOCKER_USER" --password-stdin
     skopeo sync -s docker -d docker "$ORIGIN_IMAGE" "$DOCKER_REGISTRY"
     if [ $? -ne 0 ]; then
         echo "Error: Failed to sync image $SRC_IMAGE."
