@@ -6,39 +6,26 @@ body:
 - type: markdown
   attributes:
     value: |
-      # ↑↑↑↑↑↑↑↑↑↑↑ 填入你要同步的 Image
+      # ↑↑↑↑↑↑↑↑↑↑↑ 填入你要同步的镜像
       ## 请包含 域名/路径:标签
 
 - type: checkboxes
   attributes:
-    label: domain
+    label: 检查清单
     options:
-    - label: 请确保包含域名(domain)
+    - label: 确保镜像格式正确 (域名/路径:标签)
 - type: markdown
   attributes:
     value: |
-      - 如 docker.io/
-      - 如 registry.k8s.io/
+      ### 域名示例
+      - docker.io/
+      - registry.k8s.io/
 
-- type: checkboxes
-  attributes:
-    label: tag
-    options:
-    - label: 请确保包含镜像的标签(tag)
-- type: markdown
-  attributes:
-    value: |
-      - 如 :latest
-      - 如 :v1
+      ### 标签示例
+      - :latest
+      - :v1
 
-- type: checkboxes
-  attributes:
-    label: check
-    options:
-    - label: 请确保这个镜像真实存在
-- type: markdown
-  attributes:
-    value: |
-      - 如 docker.io/library/busybox:latest
-      - 如 docker.io/kindest/node:v1.30.0
-      - 如 registry.k8s.io/kubectl:v1.30.0
+      ### 完整镜像示例
+      - docker.io/library/busybox:latest
+      - docker.io/kindest/node:v1.30.0
+      - registry.k8s.io/kubectl:v1.30.0
