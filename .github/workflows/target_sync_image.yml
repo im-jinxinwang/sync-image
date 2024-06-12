@@ -1,0 +1,49 @@
+name: Target Sync Image
+on:
+  schedule:
+    - cron: '0 16 * * *'
+  issues:
+    types: [opened, edited]
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    permissions:
+      issues: write
+    if: contains(github.event.issue.labels.*.name, 'porter')
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Check Issue
+      run: |
+        gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
+        ORIGIN_IMAGE=$(echo "${{ github.event.issue.title }}" | awk '{print $1}')
+        if [[ -z "${ORIGIN_IMAGE}" ]]; then
+          gh issue comment ${{ github.event.issue.number }} -b "Image not found."
+          exit 1
+        fi
+        if [[ "${ORIGIN_IMAGE}" != *":"* ]]; then
+          gh issue comment ${{ github.event.issue.number }} -b "镜像 ${ORIGIN_IMAGE} 不存在, 请指定 tag, 如: ${ORIGIN_IMAGE}:latest"
+          exit 1
+        fi
+        if [[ "${ORIGIN_IMAGE%%/*}" != *"."* ]]; then
+          gh issue comment ${{ github.event.issue.number }} -b "镜像 ${ORIGIN_IMAGE} 不存在, 请指定域名, 如: docker.io/${ORIGIN_IMAGE}"
+          exit 1
+        fi
+    - name:  Sync image
+      env:
+        DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }} 
+      run: |
+        gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
+        ORIGIN_IMAGE=$(echo "${{ github.event.issue.title }}" | awk '{print $1}')
+        IMAGE_NAME=$(echo "${{ github.event.issue.title }}" | awk -F'/' '{print $NF}')
+        bash ./hack/target_sync_image.sh "$ORIGIN_IMAGE" "$DOCKER_REGISTRY/$DOCKER_NAMESPACE"
+        gh issue comment ${{ github.event.issue.number }} -b "镜像 ${ORIGIN_IMAGE} 同步完成<br>请使用 $DOCKER_REGISTRY/$DOCKER_NAMESPACE/$IMAGE_NAME 下载"
+        gh issue close ${{ github.event.issue.number }} --reason "completed"
