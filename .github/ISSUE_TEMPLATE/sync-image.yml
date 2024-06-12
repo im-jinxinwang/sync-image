@@ -19,7 +19,6 @@ body:
     value: |
       - 如 docker.io/
       - 如 registry.k8s.io/
-      - 如果不包含域名, 需要主动添加默认的 docker.io/
 
 - type: checkboxes
   attributes:
