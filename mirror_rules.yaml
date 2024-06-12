@@ -1,0 +1,7 @@
+mirrors:
+  - gcr.io
+  - k8s.gcr.io
+  - registry.k8s.io
+  - quay.io
+  - ghcr.io
+  - docker.io

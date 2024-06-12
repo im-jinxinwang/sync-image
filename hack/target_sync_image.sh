@@ -10,7 +10,7 @@ DOCKER_REGISTRY=$2
 
 check_mirror() {
     local src_mirror_name=$(echo "$ORIGIN_IMAGE" | cut -d '/' -f 1)
-    if ! grep -q "$src_mirror_name" mirrors.yaml; then
+    if ! grep -q "$src_mirror_name" mirror_rules.yaml; then
         echo "Error: Only these mirrors are supported."
         exit 1
     fi

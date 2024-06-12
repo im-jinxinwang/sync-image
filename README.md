@@ -52,7 +52,7 @@ Fork/分叉代码自行维护
 -------
 
 - 必须: <https://github.com/im-jinxinwang/sync-image> 点击连接在自己账号下分叉出 `sync-image` 项目
-- 可选: 修改 [./mirrors.yaml](./mirrors.yaml) 增加暂未支持的镜像库
+- 可选: 修改 [./mirror_rules.yaml](./mirror_rules.yaml) 增加暂未支持的镜像库
 - 在 [./settings/actions](../../settings/actions) 的 `Workflow permissions` 选项中，授予读写权限
 - 在 [./settings/secrets/actions](../../settings/secrets/actions) 创建自己的参数
 
