@@ -34,12 +34,10 @@ Uses/如何拉取新镜像
 **Issues 必须带 `porter` label，** 简单来说就是通过模板创建就没问题，别抖机灵自己瞎弄。
 
 **标题必须为 `镜像名:tag` 的格式，** 例如
-- `k8s.gcr.io/federation-controller-manager-arm64:v1.3.1-beta.1`
-- `gcr.io/google-containers/federation-controller-manager-arm64:v1.3.1-beta.1`
+- `quay.io/calico/apiserver:v3.28.0-28-g834d69939613`
 
-**特别的**，如果要指定平台的话 `镜像名:tag|平台类型`
-- `busybox:latest|linux/arm64`
-- `busybox:latest|linux/arm/v7`
+**注意**，默认同步所有平台
+
 
 issues的内容无所谓，可以为空
 
