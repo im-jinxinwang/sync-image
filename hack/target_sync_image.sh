@@ -18,12 +18,21 @@ check_mirror() {
 
 main(){
     check_mirror
-    echo "$DOCKER_PASSWORD" | skopeo login "$DOCKER_REGISTRY" -u "$DOCKER_USER" --password-stdin
-    skopeo sync -s docker -d docker "$ORIGIN_IMAGE" "$DOCKER_REGISTRY"
+
+    if [ "$SKOPEO_INSECURE" = "true" ]; then
+        SRC_TLS_VERIFY="--src-tls-verify=false"
+        DEST_TLS_VERIFY="--dest-tls-verify=false"
+    else
+        SRC_TLS_VERIFY="--src-tls-verify=true"
+        DEST_TLS_VERIFY="--dest-tls-verify=true"
+    fi
+
+    skopeo sync "$SRC_TLS_VERIFY" "$DEST_TLS_VERIFY"  -s docker -d docker --dest-username "$DOCKER_USER" --dest-password "$DOCKER_PASSWORD"  "$ORIGIN_IMAGE" "$DOCKER_REGISTRY"
     if [ $? -ne 0 ]; then
         echo "Error: Failed to sync image $SRC_IMAGE."
         exit 1
     fi
 }
+
 
 main
