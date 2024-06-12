@@ -5,8 +5,12 @@ set -o nounset
 set -o pipefail
 set -x
 
-ORIGIN_IMAGE=$1
-DOCKER_REGISTRY=$2
+ORIGIN_IMAGE=${1:-}
+DOCKER_REGISTRY=${2:-}
+
+: "${DOCKER_USER:?Need to set DOCKER_USER}"
+: "${DOCKER_PASSWORD:?Need to set DOCKER_PASSWORD}"
+: "${SKOPEO_INSECURE:=false}"
 
 check_mirror() {
     local src_mirror_name=$(echo "$ORIGIN_IMAGE" | cut -d '/' -f 1)
@@ -27,12 +31,11 @@ main(){
         DEST_TLS_VERIFY="--dest-tls-verify=true"
     fi
 
-    skopeo sync "$SRC_TLS_VERIFY" "$DEST_TLS_VERIFY"  -s docker -d docker --dest-username "$DOCKER_USER" --dest-password "$DOCKER_PASSWORD"  "$ORIGIN_IMAGE" "$DOCKER_REGISTRY"
+    skopeo sync "$SRC_TLS_VERIFY" "$DEST_TLS_VERIFY" -s docker -d docker --dest-username "$DOCKER_USER" --dest-password "$DOCKER_PASSWORD" "$ORIGIN_IMAGE" "$DOCKER_REGISTRY"
     if [ $? -ne 0 ]; then
-        echo "Error: Failed to sync image $SRC_IMAGE."
+        echo "Error: Failed to sync image $ORIGIN_IMAGE."
         exit 1
     fi
 }
-
 
 main
