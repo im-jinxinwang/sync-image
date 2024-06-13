@@ -10,7 +10,10 @@ DOCKER_REGISTRY=${2:-}
 
 : "${DOCKER_USER:?Need to set DOCKER_USER}"
 : "${DOCKER_PASSWORD:?Need to set DOCKER_PASSWORD}"
-: "${SKOPEO_INSECURE:=false}"
+
+if [ -z "${SKOPEO_INSECURE+x}" ] || [ -z "$SKOPEO_INSECURE" ]; then
+  SKOPEO_INSECURE=false
+fi
 
 check_mirror() {
     local src_mirror_name=$(echo "$ORIGIN_IMAGE" | cut -d '/' -f 1)

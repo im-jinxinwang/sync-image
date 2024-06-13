@@ -39,7 +39,8 @@ jobs:
         DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }} 
+        DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }}
+        SKOPEO_INSECURE: ${{ env.SKOPEO_INSECURE }}
       run: |
         gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
         ORIGIN_IMAGE=$(echo "${{ github.event.issue.title }}" | awk '{print $1}')
