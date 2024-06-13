@@ -6,6 +6,8 @@ jobs:
   sync:
     runs-on: ubuntu-24.04
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
     - name: Check if triggered by an admin
       id: check-admin
       run: |
@@ -23,14 +25,13 @@ jobs:
             exit 1
           fi
         fi
-    - name: Checkout repository
-      uses: actions/checkout@v4
     - name:  Sync image
       env:
         DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }} 
+        DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }}
+        SKOPEO_INSECURE: ${{ env.SKOPEO_INSECURE }}
       run: |
         for MIRROR_NAME in $(cat timed_sync_mirror.txt);
         do

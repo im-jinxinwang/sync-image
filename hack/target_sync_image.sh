@@ -18,7 +18,7 @@ fi
 check_mirror() {
     local src_mirror_name=$(echo "$ORIGIN_IMAGE" | cut -d '/' -f 1)
     if ! grep -q "$src_mirror_name" mirror_rules.yaml; then
-        echo "Error: Only these mirrors are supported."
+        echo "Error: Only support mirrors defined in mirror_rules.yaml."
         exit 1
     fi
 }
