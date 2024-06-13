@@ -1,0 +1,38 @@
+name: Timed Sync Mirror
+on:
+  workflow_dispatch:
+  
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check if triggered by an admin
+        id: check-admin
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            TRIGGERING_USER="${{ github.actor }}"
+            REPO_OWNER="${{ github.repository_owner }}"
+            REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+
+            ADMIN=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/collaborators/${TRIGGERING_USER}/permission" \
+              | jq -r '.permission')
+
+            if [ "$ADMIN" != "admin" ]; then
+              echo "You are not authorized to trigger this workflow."
+              exit 1
+            fi
+          fi
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name:  Sync image
+      env:
+        DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }} 
+      run: |
+        for MIRROR_NAME in $(cat timed_sync_mirror.txt);
+        do
+            bash ./hack/target_sync_image.sh "$MIRROR_NAME" "$DOCKER_REGISTRY/$DOCKER_NAMESPACE"
+        done
