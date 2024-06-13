@@ -35,7 +35,7 @@ jobs:
       run: |
         for MIRROR_NAME in $(cat timed_sync_mirror.txt);
         do
-            for LIST_TAGS in $(skopeo  list-tags docker://$MIRROR_NAME |jq -r '.Tags[]' | sort -V | tail -n 10);
+            for LIST_TAGS in $(skopeo  list-tags docker://$MIRROR_NAME | jq -r '.Tags[] | select(test("\\d+\\.\\d"))' | sort -V | tail -n 10);
             do
                 bash ./hack/target_sync_image.sh "$MIRROR_NAME:$LIST_TAGS" "$DOCKER_REGISTRY/$DOCKER_NAMESPACE"
             done
