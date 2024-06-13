@@ -5,3 +5,5 @@ mirrors:
   - quay.io
   - ghcr.io
   - docker.io
+  - docker.elastic.co
+  - nvcr.io
