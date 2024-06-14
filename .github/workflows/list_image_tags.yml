@@ -31,6 +31,6 @@ jobs:
       run: |
         gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
         ORIGIN_IMAGE=$(echo "${{ github.event.issue.title }}" | awk '{print $1}')
-        LIST_IMAGE_JSON=$(skopeo  list-tags docker://${ORIGIN_IMAGE} | jq -r '.Tags[] | select(test("\\d+\\.\\d"))')
+        LIST_IMAGE_JSON=$(skopeo  list-tags docker://${ORIGIN_IMAGE} | jq -r '.Tags[] | select(test("\\d+\\.\\d"))' | sort -Vr )
         gh issue comment ${{ github.event.issue.number }} -b "$LIST_IMAGE_JSON"
         gh issue close ${{ github.event.issue.number }} --reason "completed"
