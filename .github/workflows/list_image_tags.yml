@@ -1,0 +1,36 @@
+name: List Image Tags
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+
+jobs:
+  list-tags:
+    runs-on: ubuntu-24.04
+    permissions:
+      issues: write
+    if: contains(github.event.issue.labels.*.name, 'list tags')
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Check Issue
+      run: |
+        gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
+        ORIGIN_IMAGE=$(echo "${{ github.event.issue.title }}" | awk '{print $1}')
+        if [[ -z "${ORIGIN_IMAGE}" ]]; then
+          gh issue comment ${{ github.event.issue.number }} -b "Image not found."
+          exit 1
+        fi
+        if [[ "${ORIGIN_IMAGE%%/*}" != *"."* ]]; then
+          gh issue comment ${{ github.event.issue.number }} -b "镜像 ${ORIGIN_IMAGE} 格式不正确。<br> 请指定域名, 如: docker.io/${ORIGIN_IMAGE}"
+          exit 1
+        fi
+    - name:  List image tags
+      run: |
+        gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
+        ORIGIN_IMAGE=$(echo "${{ github.event.issue.title }}" | awk '{print $1}')
+        LIST_IMAGE_JSON=$(skopeo  list-tags docker://${ORIGIN_IMAGE})
+        gh issue comment ${{ github.event.issue.number }} -b "$LIST_IMAGE_JSON"
+        gh issue close ${{ github.event.issue.number }} --reason "completed"

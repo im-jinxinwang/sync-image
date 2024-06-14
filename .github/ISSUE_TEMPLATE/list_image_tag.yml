@@ -1,0 +1,27 @@
+name: List Image Tags
+description: 获取指定镜像库的所有tags
+labels:
+- "list tags"
+body:
+- type: markdown
+  attributes:
+    value: |
+      # ↑↑↑ 填入需要查询的镜像库
+      ## 请包含 域名/路径
+
+- type: checkboxes
+  attributes:
+    label: 检查清单
+    options:
+    - label: 确保镜像格式正确 (域名/路径)
+- type: markdown
+  attributes:
+    value: |
+      ### 域名示例
+      - docker.io/
+      - registry.k8s.io/
+
+      ### 完整仓库示例
+      - docker.io/library/busybox
+      - docker.io/kindest/node
+      - registry.k8s.io/kubectl
