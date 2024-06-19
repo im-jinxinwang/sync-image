@@ -1,7 +1,5 @@
 name: Target Sync Image
 on:
-  schedule:
-    - cron: '0 16 * * *'
   issues:
     types: [opened, edited]
   workflow_dispatch:
