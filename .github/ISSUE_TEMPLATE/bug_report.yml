@@ -1,0 +1,44 @@
+name: Bug Report
+description: 用于报告问题
+title: "[Bug]: "
+labels: [bug]
+assignees: ''
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您提交问题报告！请提供以下信息以帮助我们更好地理解和解决您的问题。
+
+  - type: input
+    id: description
+    attributes:
+      label: 问题描述
+      description: 请清晰简明地描述遇到的问题。
+      placeholder: 问题描述...
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 请详细描述如何复现该问题。
+      placeholder: |
+        1. 打开 '...'
+        2. 点击 '....'
+        3. 滚动到 '....'
+        4. 看到错误
+
+  - type: input
+    id: expected
+    attributes:
+      label: 预期行为
+      description: 简要描述预期的行为。
+      placeholder: 预期行为...
+
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: 其他上下文
+      description: 在此添加关于问题的任何其他上下文。
+      placeholder: 其他上下文...
