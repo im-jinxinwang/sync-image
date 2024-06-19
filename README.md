@@ -1,16 +1,25 @@
 # sync-image (Google Container Registry镜像加速)
 -------
 
-Disclaimer/免责声明
+## Disclaimer/免责声明
 -------
-本人郑重承诺
-1. 本项目不以盈利为目的，过去，现在，未来都不会用于牟利。
-2. 本项目不承诺永久可用（比如包括但不限于 DockerHub 关闭，或者 DockerHub 修改免费计划限制个人免费镜像数量，Github 主动关闭本项目，Github Action 免费计划修改），但会承诺尽量做到向后兼容（也就是后续有新的扩展 Registry 不会改动原有规则导致之前的不可用）。
-3. 本项目不承诺所转存的镜像是安全可靠的，本项目只做转存（从上游 Registry pull 镜像，重新打tag，推送到目标 Registry（本项目是推到 Docker hub , 可以通过 Fork 到自己仓库改成私有 Registry）），不会进行修改（但是转存后的摘要和上游摘要不相同，这是正常的(因为镜像名字变了)），但是如果上游本身就是恶意镜像，那么转存后仍然是恶意镜像。目前支持的 `gcr.io` , `k8s.gcr.io` , `registry.k8s.io` , `quay.io`, `ghcr.io` 好像都是支持个人上传镜像的，在使用镜像前，请自行确认上游是否可靠，应自行避免供应链攻击。
-4. 对于 DockerHub 和 Github 某些策略修改导致的 不可预知且不可控因素等导致业务无法拉取镜像而造成损失的，本项目不承担责任。
-5. 对于上游恶意镜像或者上游镜像依赖库版本低导致的安全风险 本项目无法识别，删除，停用，过滤，要求使用者自行甄别，本项目不承担责任。
+**本人郑重承诺**
 
-如果不认可上面所述，请不要使用本项目，一旦使用，则视为同意。
+1. **非盈利目的**  
+   本项目不以盈利为目的，过去、现在、未来都不会用于牟利。
+
+2. **可用性声明**  
+   本项目不承诺永久可用（例如，GitHub 主动关闭本项目，GitHub Actions 免费计划修改，DockerHub 政策变化等）。尽管如此，本项目会尽量做到向后兼容，以确保在扩展 Registry 时不会影响现有的使用规则。
+
+3. **镜像安全性声明**  
+   本项目不承诺所转存的镜像是安全可靠的。本项目仅做转存操作（使用 skopeo 从上游 Registry 推送到目标 Registry）。在使用镜像前，请自行确认上游镜像来源的可靠性，务必自行避免供应链攻击。目前支持的 Registry 包括 `gcr.io`、`k8s.gcr.io`、`registry.k8s.io`、`quay.io`、`ghcr.io` 等，这些平台允许个人上传镜像，请谨慎使用。
+
+4. **策略变更风险**  
+   对于因 DockerHub 和 GitHub 的策略变更导致的不可预知且不可控的因素，例如业务无法拉取镜像而造成的任何损失，本项目不承担责任。
+
+5. **上游镜像安全风险**  
+   对于上游镜像中的恶意内容或者由于依赖库版本低导致的安全风险，本项目无法进行识别、删除、停用或过滤。用户在使用镜像时需要自行甄别和确认镜像的安全性，本项目对此不承担责任。
+
 
 Syntax/语法
 -------
@@ -23,73 +32,43 @@ gcr.io/namespace/{image}:{tag}
 registry.cn-hangzhou.aliyuncs.com/aliyun_ago/{image}:{tag}
 ```
 
-Uses/如何拉取新镜像
+## Uses/如何拉取新镜像
 -------
-[创建issues(直接套用模板即可)](https://github.com/im-jinxinwang/sync-image/issues/new/choose) ,将自动触发 github actions 进行拉取转推到aliyun容器镜像服务
+
+[创建 Issues (直接套用模板即可)](https://github.com/im-jinxinwang/sync-image/issues/new/choose)，将自动触发 GitHub Actions 进行拉取并推送到阿里云容器镜像服务。
 
 **注意：**
 
-**为了防止被滥用，目前仅仅支持一次同步一个镜像**
+- 为了防止被滥用，目前仅支持一次同步一个镜像。
+- Issues 必须带有 `porter` 标签，简单来说，通过 Sync Image 模板创建即可。
+- 标题必须为 `镜像名:tag` 的格式，例如：
+  - `quay.io/calico/apiserver:v3.28.0-28-g834d69939613`
+- 默认同步所有平台。
+- Issues 的内容无所谓，可以为空。
+   - 可以参考 [已搬运镜像集锦](https://github.com/im-jinxinwang/sync-image/issues?q=is%3Aissue+label%3Aporter+)。
 
-**Issues 必须带 `porter` label，** 简单来说就是通过模板创建就没问题，别抖机灵自己瞎弄。
+- 本项目目前仅支持 `mirror_rules.yaml` 文件中的镜像。对于其他镜像源，您可以提 Issues 反馈，或者自行 Fork 项目并修改 `mirror_rules.yaml`。
 
-**标题必须为 `镜像名:tag` 的格式，** 例如
-- `quay.io/calico/apiserver:v3.28.0-28-g834d69939613`
+## 查询image tags
+---
 
-**注意**，默认同步所有平台
+[创建 Issues (直接套用 List Image Tags 模板即可)](https://github.com/im-jinxinwang/sync-image/issues/new/choose)，将自动触发 GitHub Actions 获取 image tags。
 
+## Fork/分叉代码自行维护
+---
+1. **必须**: [点击链接](https://github.com/im-jinxinwang/sync-image)，在您自己的账号下 Fork 出 `sync-image` 项目。
+   
+2. **可选**: 如果需要增加暂未支持的镜像库，请修改 [./mirror_rules.yaml](./mirror_rules.yaml) 文件。
 
-issues的内容无所谓，可以为空
+3. **设置 GitHub Actions 权限**:
+   在 [GitHub Actions 设置页面](../../settings/actions)，确保在 `Workflow permissions` 选项中为该项目授予读写权限。
 
-可以参考 [已搬运镜像集锦](https://github.com/im-jinxinwang/sync-image/issues?q=is%3Aissue+label%3Aporter+)
+4. **配置 Secrets**:
+   在 [GitHub 项目 Secrets 设置页面](../../settings/secrets/actions) 创建以下自定义参数：
 
-**注意:**
-
-本项目目前仅支持 `gcr.io` , `k8s.gcr.io` , `registry.k8s.io` , `quay.io`, `ghcr.io` ，`docker.io`镜像，其余镜像源可以提 Issues 反馈或者自己 Fork 一份，修改 `rules.yaml`
-
-
-Fork/分叉代码自行维护
--------
-
-- 必须: <https://github.com/im-jinxinwang/sync-image> 点击连接在自己账号下分叉出 `sync-image` 项目
-- 可选: 修改 [./mirror_rules.yaml](./mirror_rules.yaml) 增加暂未支持的镜像库
-- 在 [./settings/actions](../../settings/actions) 的 `Workflow permissions` 选项中，授予读写权限
-- 在 [./settings/secrets/actions](../../settings/secrets/actions) 创建自己的参数
-
-`DOCKER_REGISTRY`: 如果推到 docker hub 为空即可
-
-`DOCKER_NAMESPACE`: 如果推到 docker hub ，则是自己的 docker hub 账号(不带@email部分)，例如我的 anjia0532
-
-`DOCKER_USER`: 如果推到 docker hub,则是 docker hub 账号(不带@email部分)，例如我的 anjia0532
-
-`DOCKER_PASSWORD`: 如果推到 docker hub，则是 docker hub 密码
-
-k8s.gcr.io 和 gcr.io 镜像tags
-------
-```bash
-
-# k8s.gcr.io
-# 可以通过浏览器打开或者curl等打开(需梯子)
-# e.g. https://k8s.gcr.io/v2/sig-storage/nfs-subdir-external-provisioner/tags/list
-https://k8s.gcr.io/v2/${namespace}/${image}/tags/list
-
-# 也可以直接用浏览打开看 UI 版的(需梯子)
-# e.g. web ui https://console.cloud.google.com/gcr/images/k8s-artifacts-prod/us/sig-storage/nfs-subdir-external-provisioner
-https://console.cloud.google.com/gcr/images/k8s-artifacts-prod/us/${namespace}/${image}
-
-# gcr.io
-# 可以通过浏览器打开或者curl等打开(需梯子)
-# e.g. https://gcr.io/v2/gloo-mesh/cert-agent/tags/list 
-https://gcr.io/v2/${namespace}/${image}/tags/list
-
-# e.g. web ui https://console.cloud.google.com/gcr/images/etcd-development/global/etcd
-# 也可以直接用浏览打开看 UI 版的(需梯子)
-https://console.cloud.google.com/gcr/images/${namespace}/global/${image}
-
-# docker hub
-# e.g. https://registry.hub.docker.com/v1/repositories/anjia0532/google-containers.sig-storage.nfs-subdir-external-provisioner/tags
-https://registry.hub.docker.com/v1/repositories/${namespace}/${image}/tags
-
-```
+   - `DOCKER_REGISTRY`: 如果推送到 Docker Hub，请填写 `docker.io` 。
+   - `DOCKER_NAMESPACE`: 如果推送到 Docker Hub，填写您的 Docker Hub 账号名（不带 @email 部分），例如 `usertest`。
+   - `DOCKER_USER`: 如果推送到 Docker Hub，填写您的 Docker Hub 账号名（不带 @email 部分），例如 `usertest`。
+   - `DOCKER_PASSWORD`: 如果推送到 Docker Hub，填写您的 Docker Hub 密码。
 
 
