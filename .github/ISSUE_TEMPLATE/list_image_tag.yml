@@ -1,5 +1,5 @@
 name: List Image Tags
-description: 获取指定镜像库带版本的tags
+description: 获取指定镜像库中的前50个带版本的标签
 labels:
 - "list tags"
 body:
