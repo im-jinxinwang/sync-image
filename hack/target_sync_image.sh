@@ -34,7 +34,7 @@ main(){
         DEST_TLS_VERIFY="--dest-tls-verify=true"
     fi
 
-    skopeo sync "$SRC_TLS_VERIFY" "$DEST_TLS_VERIFY" -s docker -d docker --dest-username "$DOCKER_USER" --dest-password "$DOCKER_PASSWORD" "$ORIGIN_IMAGE" "$DOCKER_REGISTRY"
+    skopeo sync --all "$SRC_TLS_VERIFY" "$DEST_TLS_VERIFY" -s docker -d docker --dest-username "$DOCKER_USER" --dest-password "$DOCKER_PASSWORD" "$ORIGIN_IMAGE" "$DOCKER_REGISTRY"
     if [ $? -ne 0 ]; then
         echo "Error: Failed to sync image $ORIGIN_IMAGE."
         exit 1
